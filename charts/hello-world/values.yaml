@@ -1,0 +1,27 @@
+image:
+  repository: harbor.coxedgecomputing.com/coxedge
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+
+replicaCount: 3
+
+autoscaling:
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+  enabled: true
+
+ingress:
+  host: hello-world.coxedgecomputing.com
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 10m
+    memory: 64Mi

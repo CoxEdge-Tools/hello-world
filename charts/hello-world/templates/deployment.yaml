@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '9113'
+    prometheus.io/path: '/metrics'
+  labels:
+    app: hello-world
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: hello-world
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
+      containers:
+        - name: hello-world
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 3000
+            fsGroup: 2000
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
